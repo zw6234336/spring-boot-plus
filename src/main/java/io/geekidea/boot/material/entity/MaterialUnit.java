@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.time.LocalDateTime;
 
 @Data
 @TableName("material_unit")
@@ -14,24 +16,26 @@ import java.util.Date;
 public class MaterialUnit {
 
     @TableId(value = "id", type = IdType.AUTO)
-    @Schema(description = "主键")
+    @Schema(description = "主键ID")
     private Long id;
-    
+
+    @TableField("unit_code")
     @Schema(description = "单位编码")
-    private String code;
-    
-    @Schema(description = "单位名称") 
-    private String name;
-    
-    @Schema(description = "备注")
-    private String remark;
-    
-    @Schema(description = "状态 1:启用 0:禁用")
-    private Boolean status;
-    
+    private String unitCode;
+
+    @TableField("unit_name")
+    @Schema(description = "单位名称")
+    private String unitName;
+
+    @TableField("is_deleted")
+    @Schema(description = "删除标识: 0-未删除 1-已删除")
+    private Boolean deleted;
+
+    @TableField(value = "created_at", fill = FieldFill.INSERT)
     @Schema(description = "创建时间")
-    private Date createTime;
-    
-    @Schema(description = "修改时间")
-    private Date updateTime;
+    private LocalDateTime createdAt;
+
+    @TableField(value = "updated_at", fill = FieldFill.INSERT_UPDATE)
+    @Schema(description = "更新时间")
+    private LocalDateTime updatedAt;
 }

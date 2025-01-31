@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.mybatis.spring.annotation.MapperScan;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
  */
 @EnableAsync
 @SpringBootApplication
+@MapperScan("io.geekidea.boot.**.mapper")
 public class SpringBootPlusApplication {
 
     private static final String BACKSLASH = "/";

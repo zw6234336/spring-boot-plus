@@ -7,38 +7,80 @@
         <id column="id" property="id"/>
         <result column="unit_code" property="unitCode"/>
         <result column="unit_name" property="unitName"/>
+        <result column="is_deleted" property="deleted"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
-        <result column="is_deleted" property="isDeleted"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, unit_code, unit_name, created_at, updated_at, is_deleted
+        id, unit_code, unit_name, is_deleted, created_at, updated_at
     </sql>
+
+    <!-- 根据ID查询详情 -->
+    <select id="info" resultType="io.geekidea.boot.material.vo.MaterialUnitVo">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM material_unit mu
+        WHERE mu.id = #{id}
+        AND mu.is_deleted = 0
+        LIMIT 1
+    </select>
 
     <!-- 分页查询 -->
     <select id="getPage" resultType="io.geekidea.boot.material.vo.MaterialUnitVo">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM material_unit
-        WHERE is_deleted = 0
-        <if test="param.unitCode != null and param.unitCode != ''">
-            AND unit_code LIKE concat('%', #{param.unitCode}, '%')
-        </if>
-        <if test="param.unitName != null and param.unitName != ''">
-            AND unit_name LIKE concat('%', #{param.unitName}, '%')
-        </if>
-        ORDER BY id DESC
+        FROM material_unit mu
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    mu.unit_name LIKE CONCAT('%', #{keyword}, '%')
+                    OR mu.unit_code LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+            <if test="deleted != null">
+                AND mu.is_deleted = #{deleted}
+            </if>
+            <if test="deleted == null">
+                AND mu.is_deleted = 0
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                AND mu.unit_code = #{unitCode}
+            </if>
+            <if test="unitName != null and unitName != ''">
+                AND mu.unit_name = #{unitName}
+            </if>
+        </where>
+        <choose>
+            <when test="sortField != null and sortField != ''">
+                ORDER BY ${sortField} ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY mu.created_at DESC
+            </otherwise>
+        </choose>
     </select>
 
-    <!-- 根据ID查询详情 -->
-    <select id="info" resultType="io.geekidea.boot.material.vo.MaterialUnitVo">
-        SELECT
-        <include refid="Base_Column_List"/>
+    <!-- 批量插入 -->
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO material_unit (unit_code, unit_name, is_deleted, created_at, updated_at)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.unitCode}, #{item.unitName}, #{item.deleted}, 
+             #{item.createdAt}, #{item.updatedAt})
+        </foreach>
+    </insert>
+
+    <!-- 统计指定编码数量（排除指定ID和已删除数据） -->
+    <select id="countByCode" resultType="int">
+        SELECT COUNT(*)
         FROM material_unit
-        WHERE id = #{id}
+        WHERE unit_code = #{code}
         AND is_deleted = 0
+        <if test="excludeId != null">
+            AND id != #{excludeId}
+        </if>
     </select>
 
 </mapper>
