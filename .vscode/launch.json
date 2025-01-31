@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SpringBootPlusApplication<spring-boot-plus>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "io.geekidea.boot.SpringBootPlusApplication",
+            "projectName": "spring-boot-plus",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
