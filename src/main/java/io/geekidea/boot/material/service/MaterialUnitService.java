@@ -2,7 +2,7 @@ package io.geekidea.boot.material.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import io.geekidea.boot.framework.page.Paging;
+import cn.hutool.db.PageResult;
 import io.geekidea.boot.material.dto.MaterialUnitDto;
 import io.geekidea.boot.material.entity.MaterialUnit;
 import io.geekidea.boot.material.query.MaterialUnitQuery;
@@ -18,6 +18,6 @@ public interface MaterialUnitService extends IService<MaterialUnit> {
 
     MaterialUnitVo info(Long id);
 
-    Paging<MaterialUnitVo> getPage(MaterialUnitQuery query);
+    PageResult<MaterialUnitVo> getPage(MaterialUnitQuery query);
 
 }

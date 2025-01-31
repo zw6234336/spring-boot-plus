@@ -76,6 +76,34 @@
         <appender-ref ref ="ERROR_FILE"/>
     </appender>
 
+    <!-- SQL日志文件 -->
+    <appender name="SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <file>${LOG_PATH}/sql.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/sql-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 异步SQL日志 -->
+    <appender name="ASYNC_SQL_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <appender-ref ref="SQL_FILE"/>
+    </appender>
+
+    <!-- MyBatis SQL日志 -->
+    <logger name="com.baomidou.mybatisplus" level="DEBUG">
+        <appender-ref ref="ASYNC_SQL_FILE"/>
+    </logger>
+    <logger name="io.geekidea.boot.mapper" level="DEBUG">
+        <appender-ref ref="ASYNC_SQL_FILE"/>
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="ASYNC_FILE" />
